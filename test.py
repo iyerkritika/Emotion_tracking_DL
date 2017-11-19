@@ -19,15 +19,17 @@ for i in range(6):
 	images_path = 'data/' + str(i) + '/'
 	images = glob.glob(images_path + '*.png')
 
-	# Get lavels
-	# label = np.empty(len(images))
-	# label.fill(i)
+	# Get labels
+	label = np.empty(len(images))
+	label.fill(i)
 
 	# Add images to final large image
-	for image in images:
-		img = cv2.imread(image)
-		data_both=img,i
-		data.append(data_both)
+	# for image in images:
+		# img = cv2.imread(image)
+		# data_both=img,i
+		# data.append(data_both)
+	immat=np.array([np.array(Image.open(image)) for image in images])
+	data.append(immat,label)
 
 print "Pickling"
 file = open("database.pickle", "wb")
