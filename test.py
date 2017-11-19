@@ -29,7 +29,9 @@ for i in range(6):
 		# data_both=img,i
 		# data.append(data_both)
 	immat=np.array([np.array(Image.open(image)) for image in images])
-	data.append(immat,label)
+	print (immat.shape)
+	data_both=(immat,label)
+	data.append(data_both)
 
 print "Pickling"
 file = open("database.pickle", "wb")
