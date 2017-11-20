@@ -2,7 +2,7 @@
 # SBATCH -N 1 # No. of computers you wanna use. Typically 1
 # SBATCH -n 2 # No. of CPU cores you wanna use. Typically 1
 # SBATCH -p gpu # This flag specifies that you wanna use GPU and not CPU
-# SBATCH -o homework.out # output file name, in case your program has anything to output (like print, etc)
+# SBATCH -o project.out # output file name, in case your program has anything to output (like print, etc)
 # SBATCH -t 24:00:00 # Amount of time
 # SBATCH --gres=gpu:3 # No. of GPU cores you wanna use. Usually 2-3
 
@@ -40,49 +40,28 @@ import glob
 number_of_labels = 6
 ####################### METHODS #########################
 
-def resize_data():
-
-	print ("Resize Complete!")
-
 def load_data():
 
-	immatrix,label= pickle.load(open('database.pickle','rb'))
+	immatrix,label= pickle.load(open('database.pickle','rb'),encoding='latin1')
 	print ("Number of input samples:", len(label))
 	print ("images:",immatrix.shape)
-	label=np.asarray(label)
-	# label[0:9000]=0 #spjain
-	# label[9000:18000]=1 #ajram
-	# label[18000:27000]=2 #pbhaskaran
-	# label[27000:36000]=3 #kygandomi
-	# label[36000:45000]=4 #kiyer
-	label=np.asarray(label,dtype=np.int16)
-	# print (label[0])
-	# print (label[9000])
-	# print (label[18000])
-	# print (label[27000])
-	# print (label[36000])
 
-	# label=np.reshape(label,(36000,1))
-	# immatrix=np.reshape(immatrix,(36000,1,48,48))
+	immatrix=np.reshape(immatrix,(36000,1,48,48))
 
 	# Now Shuffle all the data and return the values
 	data,Label = shuffle(immatrix,label, random_state=2)
 	main_data = [data,Label]
-	# print (Label[0])
-	# Seperate main data out
+	# # print (Label[0])
+	# # Seperate main data out
 	(X, Y) = (main_data[0], main_data[1])
-
-	# Create the test and training data by splitting them
+	#
+	# # Create the test and training data by splitting them
 	X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=4)
-
-	# convert class vectors to binary class matrices
+	#
+	# # convert class vectors to binary class matrices
 	Y_train = np_utils.to_categorical(Y_train, number_of_labels)
 	Y_test = np_utils.to_categorical(Y_test, number_of_labels)
-	# print (X_train.shape)
-	# print (Y_train.shape)
-	# print (X_test.shape)
-	# print (Y_test.shape)
-	# print (Y_train[1:10])
+
 	# Return the data
 	return X_train, Y_train, X_test, Y_test
 
@@ -92,7 +71,7 @@ def create_model():
 	# Create CNN model
 
 	model = Sequential()
-	model.add(Convolution2D(16, 3, 3, dim_ordering="th", input_shape=(1, 170, 96), activation='relu'))
+	model.add(Convolution2D(16, 3, 3, dim_ordering="th", input_shape=(1, 48, 48), activation='relu'))
 	model.add(Convolution2D(16, 3, 3, dim_ordering="th"))
 	model.add(BatchNormalization())
 	model.add(Activation('relu'))
@@ -107,8 +86,8 @@ def create_model():
 	model.add(BatchNormalization())
 	model.add(Activation('relu'))
 	model.add(MaxPooling2D(pool_size=(2, 2)))
-	model.add(Convolution2D(16, 3, 3, dim_ordering="th", activation='relu'))
-	model.add(Convolution2D(16, 3, 3, dim_ordering="th"))
+	# model.add(Convolution2D(32, 3, 3, dim_ordering="th", activation='relu'))
+	# model.add(Convolution2D(32, 3, 3, dim_ordering="th"))
 	model.add(BatchNormalization())
 	model.add(Activation('relu'))
 	model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -158,17 +137,15 @@ def compile_model(model, X_train, Y_train, X_test, Y_test):
 X_train, Y_train, X_test, Y_test = load_data()
 print ("Data Loaded Sucessfully!")
 
-# model = create_model()
-# print ("Model Created")
-
-# history, scores,model = compile_model(model, X_train, Y_train, X_test, Y_test)
-# model.save_weights("model.h5")
-# print ("Model Compiled")
+model = create_model()
+print ("Model Created")
+#
+history, scores,model = compile_model(model, X_train, Y_train, X_test, Y_test)
+model.save_weights("model.h5")
+print ("Model Compiled")
 # f = open('output_history.pickle','wb')
 # pickle.dump(history.history,f)
 # f.close()
 # f = open('output_scores.pickle','wb')
 # pickle.dump(scores,f)
 # f.close()
-#plot(history)
-#plot_model(history, scores)
