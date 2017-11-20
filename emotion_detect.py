@@ -37,7 +37,7 @@ from PIL import Image
 import pickle
 import glob
 
-number_of_labels = 5
+number_of_labels = 6
 ####################### METHODS #########################
 
 def resize_data():
@@ -46,7 +46,7 @@ def resize_data():
 
 def load_data():
 
-	immatrix,label= pickle.load(open('#.pickle','rb'))
+	immatrix,label= pickle.load(open('database.pickle','rb'))
 	print ("Number of input samples:", len(label))
 	print ("images:",immatrix.shape)
 	label=np.asarray(label)
@@ -62,7 +62,8 @@ def load_data():
 	# print (label[27000])
 	# print (label[36000])
 
-	immatrix=np.reshape(immatrix,(45000,1,170,96))
+	# label=np.reshape(label,(36000,1))
+	# immatrix=np.reshape(immatrix,(36000,1,48,48))
 
 	# Now Shuffle all the data and return the values
 	data,Label = shuffle(immatrix,label, random_state=2)
@@ -157,17 +158,17 @@ def compile_model(model, X_train, Y_train, X_test, Y_test):
 X_train, Y_train, X_test, Y_test = load_data()
 print ("Data Loaded Sucessfully!")
 
-model = create_model()
-print ("Model Created")
+# model = create_model()
+# print ("Model Created")
 
-history, scores,model = compile_model(model, X_train, Y_train, X_test, Y_test)
-model.save_weights("model.h5")
-print ("Model Compiled")
-f = open('output_history.pickle','wb')
-pickle.dump(history.history,f)
-f.close()
-f = open('output_scores.pickle','wb')
-pickle.dump(scores,f)
-f.close()
+# history, scores,model = compile_model(model, X_train, Y_train, X_test, Y_test)
+# model.save_weights("model.h5")
+# print ("Model Compiled")
+# f = open('output_history.pickle','wb')
+# pickle.dump(history.history,f)
+# f.close()
+# f = open('output_scores.pickle','wb')
+# pickle.dump(scores,f)
+# f.close()
 #plot(history)
 #plot_model(history, scores)
