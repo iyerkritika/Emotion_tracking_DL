@@ -24,14 +24,14 @@ for i in range(6):
 	label.fill(i)
 
 	# Add images to final large image
-	# for image in images:
-		# img = cv2.imread(image)
-		# data_both=img,i
-		# data.append(data_both)
-	immat=np.array([np.array(Image.open(image)) for image in images])
-	print (immat.shape)
-	data_both=(immat,label)
-	data.append(data_both)
+	for image in images:
+		img = cv2.imread(image)
+		data_both=img,i
+		data.append(data_both)
+	# immat=np.array([np.array(Image.open(image)) for image in images])
+		print (data.shape)
+	# data_both=(immat,label)
+	# data.append(data_both)
 
 print "Pickling"
 file = open("database.pickle", "wb")
