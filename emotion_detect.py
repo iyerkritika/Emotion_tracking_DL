@@ -98,7 +98,7 @@ def create_model():
 	model.add(Dense(64, activation='relu'))
 	model.add(Dropout(0.1))
 	model.add(Dense(32, activation='relu'))
-	model.add(Dropout(0.1))
+	# model.add(Dropout(0.1))
 	model.add(Dense(number_of_labels, activation='softmax'))
 	return model
 
@@ -159,8 +159,3 @@ print("Model Saved to Disk Sucessfully!")
 # f = open('output_scores.pickle','wb')
 # pickle.dump(scores,f)
 # f.close()
-
-
-
-
-
