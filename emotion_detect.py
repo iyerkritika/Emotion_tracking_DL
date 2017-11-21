@@ -121,6 +121,7 @@ def compile_model(model, X_train, Y_train, X_test, Y_test):
 	print(model.summary())
 	lrate = LearningRateScheduler(step_decay)
 	callbacks_list = [lrate]
+
 	# Fit the model
 	history = model.fit(X_train, Y_train, validation_data=(X_test, Y_test), nb_epoch=epochs, callbacks = callbacks_list, batch_size=64)
 
@@ -128,7 +129,7 @@ def compile_model(model, X_train, Y_train, X_test, Y_test):
 	scores = model.evaluate(X_test, Y_test, verbose=0)
 	print("Accuracy: %.2f%%" % (scores[1]*100))
 
-	return history, scores,model
+	return model, history, scores,model
 
 #################################################################
 #################### MAIN : CODE RUNS HERE ######################
@@ -140,12 +141,25 @@ print ("Data Loaded Sucessfully!")
 model = create_model()
 print ("Model Created")
 #
-history, scores,model = compile_model(model, X_train, Y_train, X_test, Y_test)
-model.save_weights("model.h5")
+final_model, history, scores,model = compile_model(model, X_train, Y_train, X_test, Y_test)
 print ("Model Compiled")
+
+# Save Model data
+model_json = final_model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+
+model.save_weights("model.h5")
+print("Model Saved to Disk Sucessfully!")
+
 # f = open('output_history.pickle','wb')
 # pickle.dump(history.history,f)
 # f.close()
 # f = open('output_scores.pickle','wb')
 # pickle.dump(scores,f)
 # f.close()
+
+
+
+
+
