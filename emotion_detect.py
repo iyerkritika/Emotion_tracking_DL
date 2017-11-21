@@ -1,5 +1,5 @@
 #!/bin/env python3
-# SBATCH -N 1 # No. of computers you wanna use. Typically 1
+# SBATCH -N 2 # No. of computers you wanna use. Typically 1
 # SBATCH -n 2 # No. of CPU cores you wanna use. Typically 1
 # SBATCH -p gpu # This flag specifies that you wanna use GPU and not CPU
 # SBATCH -o project.out # output file name, in case your program has anything to output (like print, etc)
@@ -98,19 +98,20 @@ def create_model():
 	model.add(Dense(64, activation='relu'))
 	model.add(Dropout(0.1))
 	model.add(Dense(32, activation='relu'))
+	model.add(Dropout(0.1))
 	model.add(Dense(number_of_labels, activation='softmax'))
 	return model
 
 def step_decay(epoch):
 	initial_lrate = 0.001
 	drop = 0.5
-	epochs_drop = 5.0
+	epochs_drop = 8.0
 	lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
 	return lrate
 
 def compile_model(model, X_train, Y_train, X_test, Y_test):
 	# Set up parameters for compiling the model
-	epochs = 16
+	epochs = 20
 	#lrate = 0.001
 	#decay = lrate/epochs
 	sgd = SGD(lr=0, momentum=0.9, decay=0, nesterov=False)
