@@ -11,6 +11,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.models import Sequential
 from keras.models import model_from_json
 import cv2
+import numpy as np
 
 # load json and create model
 json_file = open('model.json','r')
@@ -33,6 +34,8 @@ camera = cv2.VideoCapture(0)
 face_detector = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
 count = 0
 
+immatrix = np.empty((1, 1, 48,48), int)
+
 while True:
 	ret, img = camera.read()
 	img = cv2.resize(img, (0,0), fx=0.5, fy=0.5) 
@@ -45,18 +48,38 @@ while True:
 		cv2.rectangle(img, (x, y), (x+w, y+h), (255,0,0), 2)
 
 		# Extract region of interest and convert to gray scale for processing
-		roi = img[y:y+h, x:x+w]
+		maxLength = w+5
+		if(h > w): maxLength = h+5
+		roi = img[y:y+maxLength, x:x+maxLength]
 		roi = cv2.cvtColor( roi, cv2.COLOR_RGB2GRAY )
-		# cv2.imshow('ROI', roi)
 		# We might need to resize the roi to 48x48 for the network
-		# img = cv2.resize(img, (0,0), fx=0.5, fy=0.5) 
+		roi = cv2.resize(roi, (48,48)) 
+		cv2.imshow('ROI', roi)
+		immatrix[0] = roi
 
 		# Use the model we created to predict the emotion
-		results = model.predict(roi)
+		results = model.predict(immatrix)
+		# print "Results: ", results
+
+		max_index = -1
+		max_value = -1
+
+		for i in range(len(results[0])):
+			if(max_value < results[0][i]):
+				max_value = results[0][i]
+				max_index = i
+
+		emotion = ''
+		if max_index == 0 : emotion = 'angry'
+		if max_index == 1 : emotion = 'fear'
+		if max_index == 2 : emotion = 'happy'
+		if max_index == 3 : emotion = 'sad'
+		if max_index == 4 : emotion = 'suprise'
+		if max_index == 5 : emotion = 'neutral'
 
 		# Report emotion on image
 		font = cv2.FONT_HERSHEY_SIMPLEX
-		cv2.putText(img,'Result',(x,y+h+30), font, 1,(255,0,0),2,cv2.LINE_AA)
+		cv2.putText(img,emotion,(x,y+h+30), font, 1,(255,0,0),2,cv2.LINE_AA)
 
 	cv2.imshow('facedetect', img)
 
