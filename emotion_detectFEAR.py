@@ -111,7 +111,7 @@ def step_decay(epoch):
 
 def compile_model(model, X_train, Y_train, X_test, Y_test):
 	# Set up parameters for compiling the model
-	epochs = 20
+	epochs = 19
 	#lrate = 0.001
 	#decay = lrate/epochs
 	sgd = SGD(lr=0, momentum=0.9, decay=0, nesterov=False)
