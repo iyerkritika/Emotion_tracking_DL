@@ -111,7 +111,7 @@ def step_decay(epoch):
 
 def compile_model(model, X_train, Y_train, X_test, Y_test):
 	# Set up parameters for compiling the model
-	epochs = 19
+	epochs = 35 
 	#lrate = 0.001
 	#decay = lrate/epochs
 	sgd = SGD(lr=0, momentum=0.9, decay=0, nesterov=False)
@@ -152,6 +152,24 @@ with open("modelFEAR.json", "w") as json_file:
 
 model.save_weights("modelFEAR.h5")
 print("Model Saved to Disk Sucessfully!")
+
+print(history.history.keys())
+#  "Accuracy"
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'validation'], loc='upper left')
+plt.show()
+# "Loss"
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'validation'], loc='upper left')
+plt.show()
 
 # f = open('output_history.pickle','wb')
 # pickle.dump(history.history,f)
